@@ -130,7 +130,14 @@ dmypy.json
 .pyre/
 
 # Oli
+**/.vscode
+**/*.code-workspace
 Examples/
 **/temp*.*
 doc/
 **/*.afdesign
+Pipfile
+Pipfile.lock
+deactivate.bat
+build.bat
+activate.bat
