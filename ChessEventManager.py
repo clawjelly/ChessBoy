@@ -44,6 +44,7 @@ class EventManager:
         self.onMoveTry = Event() # trying a move
         self.onMove = Event()   # move is successful
         self.newPieceOnBoard = Event() # a new piece was created
+        self.getEngineList = Event() # returns a list of engines
 
 eventManager = EventManager()
 

@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, \
                             QDockWidget, QTextBrowser
 
 from ChessEventManager import eventManager
+from Preferences import Preferences
 from BoardGUI import BoardGUI
 from NotationGUI import NotationGUI
 from PlayerSettingsGUI import PlayerSettingsGUI
@@ -31,20 +32,36 @@ class MainWindow(QMainWindow):
         self.title = "Chessboy"
         self.width = 1920
         self.height = 1080
-        self.iconName = "icons/pecg.ico"
+        self.iconName = "icons/ChessBoy.ico"
         self.setMinimumSize(800, 600)
         self.light_palette = QApplication.instance().palette()
 
         eventManager.onMoveTry += self.makeMoveEvent
 
+        self.init_prefs()
         self.init_chess_board()
         self.init_gui()
 
         self.board_scene.setup_board(self.board)
         eventManager.newGame()
-    
-    def init_chess_board(self):
-        self.board = chess.Board()
+
+    # ---- Preferences
+
+    def init_prefs(self):
+        self.prefs = Preferences(self)
+
+    def show_prefs(self):
+        self.prefs.show()
+
+    def set_dark_mode(self):
+        app = QApplication.instance()
+        app.setPalette(get_dark_mode())
+
+    def set_light_mode(self):
+        app = QApplication.instance()
+        app.setPalette(self.light_palette)
+
+    # --- Main GUI
 
     def init_gui(self):
         self.setWindowTitle(self.title)
@@ -70,25 +87,40 @@ class MainWindow(QMainWindow):
         fileMenu.addAction(self.new_game_action)
         menuBar.addMenu(fileMenu)
 
-        # editMenu = menuBar.addMenu("&Edit")
-        helpMenu = QMenu("&Help", self)
+        editMenu = QMenu("&Edit", self)
+        menuBar.addMenu(editMenu)
         self.dark_mode_action = QAction("Set Dark Mode", self)
         self.dark_mode_action.triggered.connect(self.set_dark_mode)
-        helpMenu.addAction(self.dark_mode_action)
+        editMenu.addAction(self.dark_mode_action)
         self.light_mode_action = QAction("Set Light Mode", self)
         self.light_mode_action.triggered.connect(self.set_light_mode)
-        helpMenu.addAction(self.light_mode_action)
+        editMenu.addAction(self.light_mode_action)
+        editMenu.addSeparator()
+        self.show_prefs_action = QAction("Preferences", self)
+        self.show_prefs_action.triggered.connect(self.show_prefs)
+        editMenu.addAction(self.show_prefs_action)
+
+        helpMenu = QMenu("&Help", self)
+        self.show_about_action = QAction("About ChessBoy", self)
+        helpMenu.addAction(self.show_about_action)
         menuBar.addMenu(helpMenu)
 
     def init_tool_bar(self):
         pass
 
+    # ---- Board/BoardGUI
+
+    def init_chess_board(self):
+        self.board = chess.Board()
+
     def init_board_gui(self):
         # self.board_scene = QGraphicsScene()
         self.board_scene = BoardGUI()
         self.board_view = QGraphicsView(self.board_scene)
-        self.board_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.board_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.board_view.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.board_view.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.board_view.setAcceptDrops(True)
         self.setCentralWidget(self.board_view)
 
@@ -107,14 +139,8 @@ class MainWindow(QMainWindow):
         self.board.reset()
         self.board_scene.setup_board(self.board)
         eventManager.newGame()
-    
-    def set_dark_mode(self):
-        app = QApplication.instance()
-        app.setPalette(get_dark_mode())
 
-    def set_light_mode(self):
-        app = QApplication.instance()
-        app.setPalette(self.light_palette)
+    # --- Events
 
     def resizeEvent(self, event):
         scale = self.board_scene.fit_to_window_scale(self.board_view.size())
