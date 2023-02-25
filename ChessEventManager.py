@@ -45,6 +45,9 @@ class EventManager:
         self.onMove = Event()   # move is successful
         self.newPieceOnBoard = Event() # a new piece was created
         self.getEngineList = Event() # returns a list of engines
+        self.timeOutWhite = Event()
+        self.timeOutBlack = Event()
+
 
 eventManager = EventManager()
 

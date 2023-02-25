@@ -16,11 +16,11 @@ from ChessEventManager import eventManager
 from Preferences import Preferences
 from BoardGUI import BoardGUI
 from NotationGUI import NotationGUI
-from PlayerSettingsGUI import PlayerSettingsGUI
+from GameSettings import GameSettings
 
 import chess
 
-from PlayerSettingsGUI import PlayerSettingsGUI
+from GameSettings import GameSettings
 # import chess.engine
 # import chess.svg
 
@@ -125,7 +125,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.board_view)
 
     def init_player_settings_dock(self):
-        self.player_settings_dock = PlayerSettingsGUI()
+        self.player_settings_dock = GameSettings()
         self.player_settings_dock.resizeEvent = self.resizeEvent
         self.addDockWidget(Qt.RightDockWidgetArea, self.player_settings_dock)
 

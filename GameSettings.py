@@ -5,10 +5,14 @@ from PyQt5.QtWidgets import QFrame, QDockWidget, QGridLayout, QPushButton, QComb
 import chess
 from ChessEventManager import eventManager
 
-class PlayerSettingsGUI(QDockWidget):
+class GameSettings(QDockWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.init_gui()
+
+
+    def init_gui(self):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.setMinimumSize(300, 80)
         self.setMaximumSize(300, 80)
